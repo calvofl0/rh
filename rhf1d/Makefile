@@ -8,6 +8,9 @@
 
 include ../Makefile.config
 
+CFLAGS += -I../
+LDFLAGS += -L../ -lrh -lrh_f90 -lm -lpthread
+
 ## --- If no FORTRAN compiler is available remove -lrh_f90 in following
 
       LIBS = -lrh -lrh_f90
