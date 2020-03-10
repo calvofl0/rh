@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
   geometry.wmu[0] = 1.0;
   if (atmos.Stokes) Bproject();
 
-  input.startJ = OLD_J;
+  //input.startJ = OLD_J;
 
   readAtomicModels();
   readMolecularModels();
