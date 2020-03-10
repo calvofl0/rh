@@ -110,6 +110,7 @@ void PiecewiseStokes(int nspect, int mu, bool_t to_obs,
       dtau_dw = zmu * (chi_I[k] + chi_I[k+dk]) *
 	fabs(geometry.height[k] - geometry.height[k+dk]);
 
+#if 0
       for (n = 0;  n < 4;  n++) {
 	dS_dw[n] = (S[n][k] - S[n][k+dk]) / dtau_dw;
 	c1 = dS_uw[n]*dtau_dw + dS_dw[n]*dtau_uw;
@@ -120,6 +121,12 @@ void PiecewiseStokes(int nspect, int mu, bool_t to_obs,
 	c1 = dtau_uw - dtau_dw;
 	Psi[k] = w[0] + (w[1]*c1 - w[2]) / (dtau_uw * dtau_dw);
       }
+#endif
+ for (n = 0;  n < 4;  n++)	{
+  dS_dw[n] = (S[n][k] - S[n][k+dk]) / dtau_dw;
+  P[n] = w[0]*S[n][k] + w[1]*dS_uw[n];
+ }
+ if (Psi) Psi[k] = w[0] - w[1] / dtau_uw;
     } else {
 
       /* --- Piecewise linear integration at end of ray -- ---------- */
