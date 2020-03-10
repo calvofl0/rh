@@ -297,8 +297,8 @@ void readAtmos_hdf5(int xi, int yi, Atmosphere *atmos, Geometry *geometry,
     /* Convert to spherical coordinates */
     for (j = 0; j < atmos->Nspace; j++) {
       atmos->B[j]       = sqrt(SQ(Bx[j]) + SQ(By[j]) + SQ(Bz[j]));
-      atmos->gamma_B[j] = acos(Bz[j]/atmos->B[j]);
-      atmos->chi_B[j]   = atan(By[j]/Bx[j]);
+      if (atmos->B[j] != 0) atmos->gamma_B[j] = acos(Bz[j]/atmos->B[j]);
+      if (Bx[j] != 0) atmos->chi_B[j]   = atan(By[j]/Bx[j]);
       /* Protect from undefined cases */
       if ((Bx[j] == 0) && (By[j] == 0) && (Bz[j] == 0))
 	atmos->gamma_B[j] = 0.0;

@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <fenv.h>
 
 #include "rh.h"
 #include "atom.h"
@@ -39,6 +40,7 @@ int main(int argc, char *argv[])
   bool_t write_analyze_output, equilibria_only, run_ray, writej;
   int    niter;
 
+  //bleexcept(FE_INVALID | FE_OVERFLOW);
   /* --- Set up MPI ----------------------             -------------- */
   initParallel(&argc, &argv, run_ray=FALSE);
   setOptions(argc, argv);
