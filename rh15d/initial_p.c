@@ -620,6 +620,7 @@ void initSolution_p(void)
       break;
 
     case OLD_POPULATIONS:
+      //readPops(atom);
       readPopulations(atom);
       break;
 

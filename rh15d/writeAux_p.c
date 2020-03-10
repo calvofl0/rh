@@ -406,6 +406,7 @@ void init_aux_existing(void) {
   io.aux_ncid = ncid;
   /* --- Consistency checks --- */
   /* Check that atmosID is the same */
+#if 0
   if (( H5LTget_attribute_info(ncid, "/", "atmosID", NULL, &type_class,
                                &attr_size) ) < 0) HERR(routineName);
   atmosID = (char *) malloc(attr_size + 1);
@@ -418,6 +419,7 @@ void init_aux_existing(void) {
     Error(WARNING, routineName, messageStr);
     }
   free(atmosID);
+#endif
 
   /* Create arrays for multiple-atom/molecule output */
   io.aux_atom_ncid   = (hid_t *) malloc(atmos.Nactiveatom * sizeof(hid_t));
@@ -823,6 +825,20 @@ void writeAux_p(void) {
 /* ------- end   --------------------------   writeAux_p.c     --- */
 
 /* ------- begin -------------------------- readPopulations_p.c -- */
+void readPops(Atom *atom) {
+  const char routineName[] = "readPops";
+  char    group_name[ARR_STRLEN], *atmosID;
+  FILE *fpops = NULL;
+
+  sprintf(group_name,(atom->ID[1] == ' ') ? "atom_%.1s" : "atom_%.2s", atom->ID);
+  fpops = fopen(group_name, "rb");
+  if (fpops == NULL) return;
+  Error(MESSAGE,routineName,"Reading atomic populations...\n");
+  fread(atom->n[0],sizeof(double),atom->Nlevel*atmos.Nspace,fpops);
+  fclose(fpops);
+  return;
+}
+
 void readPopulations(Atom *atom) {
 
   /* --- Read populations from file.
@@ -836,7 +852,7 @@ void readPopulations(Atom *atom) {
          --                                            -------------- */
   const char routineName[] = "readPopulations_p";
   char    group_name[ARR_STRLEN], *atmosID;
-  int nz, nlevel;
+  int nz, nlevel, i;
   H5T_class_t type_class;
   size_t attr_size;
   hsize_t offset[] = {0, 0, 0, 0};
@@ -846,10 +862,14 @@ void readPopulations(Atom *atom) {
 
   /* --- Open atom group --- */
   sprintf(group_name,(atom->ID[1] == ' ') ? "atom_%.1s" : "atom_%.2s", atom->ID);
-  if (( ncid = H5Gopen(io.aux_ncid, group_name, H5P_DEFAULT) ) < 0)
-    HERR(routineName);
+  //if (( ncid = H5Gopen(io.aux_ncid, group_name, H5P_DEFAULT) ) < 0)
+  //  HERR(routineName);
+  for (i=0; i < atmos.Nactiveatom; i++) if (atmos.activeatoms[i] == atom) break;
+  ncid = io.aux_atom_ncid[i];
+  if (! ncid) HERR(routineName);
   /* --- Consistency checks --- */
   /* Check that atmosID is the same */
+#if 0
   if (( H5LTget_attribute_info(io.aux_ncid, "/", "atmosID", NULL, &type_class,
                                &attr_size) ) < 0) HERR(routineName);
   atmosID = (char *) malloc(attr_size + 1);
@@ -862,6 +882,7 @@ void readPopulations(Atom *atom) {
     Error(WARNING, routineName, messageStr);
   }
   free(atmosID);
+#endif
   /* Check that dimension sizes match */
   if (( H5LTget_attribute_int(ncid, ".", "nlevel", &nlevel) ) < 0)
     HERR(routineName);
@@ -871,6 +892,7 @@ void readPopulations(Atom *atom) {
           atom->Nlevel, (int)nlevel);
       Error(ERROR_LEVEL_2, routineName, messageStr);
   }
+#if 0
   if (( H5LTget_attribute_int(io.aux_ncid, ".", "nz", &nz) ) < 0)
     HERR(routineName);
   if (nz < atmos.Nspace) {
@@ -879,6 +901,7 @@ void readPopulations(Atom *atom) {
       atmos.Nspace, (int)nz);
     Error(ERROR_LEVEL_2, routineName, messageStr);
   }
+#endif
 
   /* --- Read data --- */
   if (( pop_var = H5Dopen2(ncid, POP_NAME, H5P_DEFAULT)) < 0)
@@ -901,6 +924,7 @@ void readPopulations(Atom *atom) {
   if (( H5Sclose(mem_dspace) ) < 0) HERR(routineName);
   if (( H5Sclose(file_dspace) ) < 0) HERR(routineName);
   if (( H5Dclose(pop_var) ) < 0) HERR(routineName);
+  //if (( H5Gclose(ncid) ) < 0) HERR(routineName);
 
   return;
 }
