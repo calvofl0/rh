@@ -420,7 +420,8 @@ void Error(enum errorlevel level, const char *routineName,
   case MESSAGE:
     if ((mpi.single_log) && (mpi.rank != 0)) return;
     if (!commandline.quiet)
-      fprintf(commandline.logfile, "%s", (messageStr) ? messageStr : "");
+      //fprintf(commandline.logfile, "%s", (messageStr) ? messageStr : "");
+      fprintf(stderr, "%s", (messageStr) ? messageStr : "");
     return;
   case WARNING:
     if ((mpi.single_log) && (mpi.rank != 0))
