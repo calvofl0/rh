@@ -90,10 +90,11 @@ int main(int argc, char *argv[])
   /* --- Force LTE populations for all active atoms -- ------------ */
   for (nact = 0;  nact < atmos.Nactiveatom;  nact++) {
     atom = atmos.activeatoms[nact];
-    atom->initial_solution = LTE_POPULATIONS;
+    //atom->initial_solution = LTE_POPULATIONS;
   }
 
   /* --- START stuff from initParallelIO, just getting the needed parts --- */
+  init_hdf5_aux();
   init_Background();
   mpi.StokesMode_save = input.StokesMode;
   /* Get file position of atom files (to re-read collisions) */
@@ -119,6 +120,7 @@ int main(int argc, char *argv[])
 
     /* Read atmosphere column */
     readAtmos(mpi.xnum[mpi.ix],mpi.ynum[mpi.iy], &atmos, &geometry, &infile);
+    if (atmos.Stokes) Bproject();
 
     /* Update quantities that depend on atmosphere and initialise others */
     UpdateAtmosDep();
