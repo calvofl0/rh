@@ -316,6 +316,8 @@ void set_S_interpolation_stokes(char *value, void *pointer)
     interpolation = DELO_BEZIER3;
   else if (!strcmp(value, "DELO_PARABOLIC"))
     interpolation = DELO_PARABOLIC;
+  else if (!strcmp(value, "LINEAR"))
+    interpolation = S_LINEAR;
   else {
     sprintf(messageStr,
 	     "Invalid value for keyword S_INTERPOLATION_STOKES: %s", value);
