@@ -33,7 +33,7 @@ typedef struct {
 typedef struct {
   char     *file_name;
   hid_t     ncid,     nx_id,    ny_id,    nz_id,    nhyd_id,     z_varid;
-  hid_t     T_varid,  ne_varid, vz_varid, nh_varid, vturb_varid;
+  hid_t     T_varid,  ne_varid, vz_varid, nh_varid, vturb_varid, ntotbis_varid;
   hid_t     Bx_varid, By_varid, Bz_varid;
   size_t    nx,       ny,       nz,       NHydr;
   double   *x, *y;

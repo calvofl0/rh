@@ -22,6 +22,7 @@
 
 /* Definitions for readAtmos_hdf5 */
 #define  TEMP_NAME  "temperature"
+#define  NTOTBIS_NAME "ntotbis"
 #define  VTURB_NAME "velocity_turbulent"
 #define  VZ_NAME    "velocity_z"
 #define  NE_NAME    "electron_density"

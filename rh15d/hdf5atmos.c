@@ -107,6 +107,8 @@ void init_hdf5_atmos(Atmosphere *atmos, Geometry *geometry,
     HERR(routineName);
   if ((infile->T_varid = H5Dopen2(ncid, TEMP_NAME, H5P_DEFAULT)) < 0)
     HERR(routineName);
+  if ((infile->ntotbis_varid = H5Dopen2(ncid, NTOTBIS_NAME, H5P_DEFAULT)) < 0)
+    HERR(routineName);
   if ((infile->z_varid = H5Dopen2(ncid, "z", H5P_DEFAULT)) < 0)
     HERR(routineName);
 
@@ -148,6 +150,7 @@ void init_hdf5_atmos(Atmosphere *atmos, Geometry *geometry,
   /* allocate arrays */
   geometry->vel = (double *) malloc(atmos->Nspace * sizeof(double));
   atmos->T      = (double *) malloc(atmos->Nspace * sizeof(double));
+  atmos->ntotbis= (double *) malloc(atmos->Nspace * sizeof(double));
   atmos->ne     = (double *) malloc(atmos->Nspace * sizeof(double));
   atmos->vturb  = (double *) calloc(atmos->Nspace , sizeof(double));
   atmos->nHtot  = (double *) malloc(atmos->Nspace * sizeof(double));
@@ -271,6 +274,8 @@ void readAtmos_hdf5(int xi, int yi, Atmosphere *atmos, Geometry *geometry,
    /* read variables */
   if ((ierror = H5Dread(infile->T_varid, H5T_NATIVE_DOUBLE, memspace_id,
 	          dataspace_id, H5P_DEFAULT, atmos->T)) < 0) HERR(routineName);
+  if ((ierror = H5Dread(infile->ntotbis_varid, H5T_NATIVE_DOUBLE, memspace_id,
+	          dataspace_id, H5P_DEFAULT, atmos->ntotbis)) < 0) HERR(routineName);
   if (input.solve_ne == NONE) {
       if ((ierror = H5Dread(infile->ne_varid, H5T_NATIVE_DOUBLE, memspace_id,
       	          dataspace_id, H5P_DEFAULT, atmos->ne)) < 0) HERR(routineName);
@@ -374,6 +379,7 @@ void close_hdf5_atmos(Atmosphere *atmos, Geometry *geometry,
   /* Close the file. */
   ierror = H5Dclose(infile->z_varid);
   ierror = H5Dclose(infile->T_varid);
+  ierror = H5Dclose(infile->ntotbis_varid);
   if (input.solve_ne == NONE) ierror = H5Dclose(infile->ne_varid);
   ierror = H5Dclose(infile->vz_varid);
   ierror = H5Dclose(infile->nh_varid);
@@ -386,6 +392,7 @@ void close_hdf5_atmos(Atmosphere *atmos, Geometry *geometry,
   ierror = H5Fclose(infile->ncid);
   /* Free stuff */
   free(atmos->T);
+  free(atmos->ntotbis);
   free(atmos->ne);
   free(atmos->vturb);
   free(atmos->nHtot);

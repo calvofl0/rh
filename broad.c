@@ -83,8 +83,9 @@ void VanderWaals(AtomicLine *line, double *GvdW)
 
     deltaR = SQ(E_RYDBERG/(atom->E[ic] - atom->E[j])) -
       SQ(E_RYDBERG/(atom->E[ic] - atom->E[i]));
-    C625  = pow(2.5 * (SQ(Q_ELECTRON)/fourPIeps0) * (ABARH/fourPIeps0) *
-		2*PI * SQ(Z*RBOHR)/HPLANCK * deltaR, 0.4);
+//    C625  = pow(2.5 * (SQ(Q_ELECTRON)/fourPIeps0) * (ABARH/fourPIeps0) *
+//		2*PI * SQ(Z*RBOHR)/HPLANCK * deltaR, 0.4);
+    C625  = 1.283984e-12 * pow(2.,0.8) * pow(1./13.605693, 0.8) * pow(deltaR, 0.4);
   }
 
   switch (line->vdWaals) {
@@ -96,7 +97,8 @@ void VanderWaals(AtomicLine *line, double *GvdW)
     vrel35_H  = pow(8.0*KBOLTZMANN/(PI * AMU * atom->weight) * 
 		    (1.0 + atom->weight/atmos.H->weight), 0.3);
 
-    cross = 8.08 * (line->cvdWaals[0]*vrel35_H +
+    //cross = 8.08 * (line->cvdWaals[0]*vrel35_H +
+    cross = 8.411 * (line->cvdWaals[0]*pow(1.e4, 0.3)*vrel35_H +
 		    line->cvdWaals[2]*He->abund*vrel35_He) * C625;
 
     for (k = 0;  k < atmos.Nspace;  k++)
@@ -143,7 +145,8 @@ void VanderWaals(AtomicLine *line, double *GvdW)
   }
   /* --- Multiply with the Hydrogen ground level population -- ------ */
 
-  for (k = 0;  k < atmos.Nspace;  k++) GvdW[k] *= atmos.H->n[0][k];
+  //for (k = 0;  k < atmos.Nspace;  k++) GvdW[k] *= atmos.H->n[0][k];
+  for (k = 0;  k < atmos.Nspace;  k++) GvdW[k] *= 1.e-6*atmos.ntotbis[k];
 }
 /* ------- end ---------------------------- VanderWaals.c ----------- */
 
